@@ -1,2 +1,7 @@
 uvicorn
 fastapi
+torch
+python-shogi
+numpy
+pandas
+pydantic
