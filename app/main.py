@@ -7,11 +7,6 @@ from app.predict import predict_next_board
 app = FastAPI()
 
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-
 class Data(BaseModel):
     currentSfen: str
 

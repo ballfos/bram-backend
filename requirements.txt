@@ -4,6 +4,4 @@ torch
 python-shogi
 numpy
 pandas
-matplotlib
-tqdm
 pydantic

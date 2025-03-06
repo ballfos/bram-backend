@@ -7,7 +7,6 @@ from app.model import ShogiModel
 
 
 def predict_next_board(current_sfen: str) -> str:
-    print("")
     # 先手後手の指定、一旦bらmは後手前提で"white"指定
     side = shogi.WHITE
     # モデルのインスタンス作成
@@ -40,7 +39,6 @@ def predict_next_board(current_sfen: str) -> str:
         # 確率の高い手を記憶
         if best_probability < output:
             best_probability = output
-            print(best_probability)
             next_sfen = board.sfen()
 
         board.pop()
