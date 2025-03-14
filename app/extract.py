@@ -15,6 +15,8 @@ def extract_features(board: shogi.Board, side: str) -> dict:
     features = {
         "loc": np.zeros((14, 9, 9), dtype=np.int8),
         "opp_loc": np.zeros((14, 9, 9), dtype=np.int8),
+        "hand": np.zeros(7, dtype=np.int8),
+        "opp_hand": np.zeros(7, dtype=np.int8),
     }
 
     # 各マスにある駒を特徴量に変換
@@ -29,5 +31,19 @@ def extract_features(board: shogi.Board, side: str) -> dict:
                     features["loc"][piece.piece_type - 1, i, j] = 1
                 else:
                     features["opp_loc"][piece.piece_type - 1, i, j] = 1
+    # 持ち駒情報を追加
+    if side == shogi.BLACK:
+        hand = board.pieces_in_hand[shogi.BLACK]
+        opp_hand = board.pieces_in_hand[shogi.WHITE]
+    else:
+        hand = board.pieces_in_hand[shogi.WHITE]
+        opp_hand = board.pieces_in_hand[shogi.BLACK]
+
+    for piece_type, count in hand.items():
+        features["hand"][piece_type - 1] = count
+
+    for piece_type, count in opp_hand.items():
+        features["opp_hand"][piece_type - 1] = count
+
     features = {key: value.tolist() for key, value in features.items()}
     return features
