@@ -7,8 +7,7 @@ from app.model import ShogiModel
 
 
 def predict_next_board(current_sfen: str) -> str:
-    # 先手後手の指定、一旦bらmは後手前提で"white"指定
-    side = shogi.WHITE
+
     # モデルのインスタンス作成
     model = ShogiModel()
     # モデルのパス
@@ -20,6 +19,9 @@ def predict_next_board(current_sfen: str) -> str:
     model.eval()
 
     board = shogi.Board(current_sfen)
+
+    # sfenから先手後手の取得
+    side = board.turn
     # 合法手のリスト化
     legal_moves = list(board.legal_moves)
 
@@ -32,10 +34,14 @@ def predict_next_board(current_sfen: str) -> str:
         # リスト形式から Tensor に変換
         feature["loc"] = torch.tensor(feature["loc"], dtype=torch.float32)
         feature["opp_loc"] = torch.tensor(feature["opp_loc"], dtype=torch.float32)
+        feature["hand"] = torch.tensor(feature["hand"], dtype=torch.float32)
+        feature["opp_hand"] = torch.tensor(feature["opp_hand"], dtype=torch.float32)
         loc = feature["loc"].unsqueeze(0)  # バッチ次元を追加
-        opp_loc = feature["opp_loc"].unsqueeze(0)  # バッチ次元を追加
+        opp_loc = feature["opp_loc"].unsqueeze(0)
+        hand = feature["hand"].unsqueeze(0)
+        opp_hand = feature["opp_hand"].unsqueeze(0)
         # 確率予測
-        output = model(loc, opp_loc)
+        output = model(loc, opp_loc, hand, opp_hand)
         # 確率の高い手を記憶
         if best_probability < output:
             best_probability = output
