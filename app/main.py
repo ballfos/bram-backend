@@ -24,12 +24,9 @@ app.add_middleware(
 async def post_data(data: Data):
     try:
         sfen = data.currentSfen
-        print(sfen)
-        next_sfen = predict_next_board(sfen)
-        print(next_sfen)
-
+        next_sfen, status = predict_next_board(sfen)
         # 正常レスポンス
-        return {"message": next_sfen, "status": "success"}
+        return {"message": next_sfen, "status": status}
 
     except Exception as e:
         # 予期しないエラー
